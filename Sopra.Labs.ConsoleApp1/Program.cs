@@ -17,8 +17,15 @@ namespace Sopra.Labs.ConsoleApp1
         {
 
             Console.WriteLine("Dame un valor");
-            int numero = int.Parse(Console.ReadLine());
-            Console.Clear();
+            int numero;
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Dame un valor");      
+            }
+            while (!int.TryParse(Console.ReadLine(), out numero));
+
             //Bucle FOR
             Console.WriteLine("Bucle for");
             for (int i = 0; i < 11; i++)
@@ -45,19 +52,34 @@ namespace Sopra.Labs.ConsoleApp1
 
             //DESDE EL VALOR DE INICIO AL VALOR FINAL
             //EN DIFERNTES SALTOS
-            Console.WriteLine("Dame valor incial");
-            int numeroInicial = int.Parse(Console.ReadLine());
-            Console.Clear();
+            int numeroInicial;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Dame valor incial");
+          
+            }
+            while (!int.TryParse(Console.ReadLine(), out numeroInicial));
 
-            Console.WriteLine("Dame valor final");
-            int numeroFinal = int.Parse(Console.ReadLine());
-            Console.Clear();
+            int numeroFinal;
 
-            Console.WriteLine("Dame valor saltos");
-            int numeroDeSaltos = int.Parse(Console.ReadLine());
-            Console.Clear();
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Dame valor final");
+            }
+            while (!int.TryParse(Console.ReadLine(), out numeroFinal));
 
-            if(numeroInicial>numeroFinal)
+            int numeroDeSaltos;
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Dame valor saltos");
+            }
+            while (!int.TryParse(Console.ReadLine(), out numeroDeSaltos));
+
+            if (numeroInicial>numeroFinal)
             {
                 while (numeroInicial >= numeroFinal)
                 {
@@ -84,17 +106,26 @@ namespace Sopra.Labs.ConsoleApp1
             //número de valores
             //almacenamos en un array
             //calculos, max, min, media, suma
-            Console.WriteLine("Dame cantidad de valores");
-            int valores = int.Parse(Console.ReadLine());
-            Console.Clear();
+            int valores;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Dame cantidad de valores");
+            }
+            while (!int.TryParse(Console.ReadLine(), out valores));
+     
 
             int[] valoresArray= new int[valores];
             for(int i=0; i<valores;i++)
             {
-                Console.WriteLine("Dame nuevo valor:");
-                int valor = int.Parse(Console.ReadLine());
+                int valor;
+                do
+                {
+                    Console.Clear();
+                    Console.WriteLine("Dame nuevo valor:");
+                }
+                while (!int.TryParse(Console.ReadLine(), out valor));
                 valoresArray[i] = valor;
-                Console.Clear();
             }
 
             //Calculos del maximo, minimo, suma y media
@@ -128,13 +159,20 @@ namespace Sopra.Labs.ConsoleApp1
             Console.WriteLine("Dame el numero del DNI:");
 
             //numero % 23 
-            int numeroDelDNI =  int.Parse(Console.ReadLine());
+
+            int numeroDelDNI;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Dame el numero del DNI:");
+            }
+            while (!int.TryParse(Console.ReadLine(), out numeroDelDNI));            
             int num=numeroDelDNI%23;
 
             //posicion del array de las letras
-            char[] letras = { 'T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E' };
-            Console.Clear();
-            Console.WriteLine(letras[num]); 
+            Console.WriteLine("Numero del DNI completo:");
+            char[] letras = { 'T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E' };      
+            Console.WriteLine(numeroDelDNI+""+letras[num]); 
     
         }
     }
