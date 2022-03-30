@@ -140,19 +140,12 @@ namespace Demo.SopraSteria._1
             Console.WriteLine("Media de todos los productos");
             Console.WriteLine("");
             float media = 0;
-            int cantProductos = 0;
-            float sumaPrecios = 0;
+
 
             var productos2 = DataLists.ListaProductos
-                .Select(r => r.Precio)
-                .ToList();
+                .Average(r => r.Precio);
 
-            foreach (float item in productos2)
-            {
-                sumaPrecios += item;
-                cantProductos++;
-            }
-            media = sumaPrecios / cantProductos;
+            media =  productos2;
             Console.WriteLine($"{media}");
 
             Console.WriteLine("");
