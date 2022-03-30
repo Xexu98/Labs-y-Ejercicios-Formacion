@@ -91,12 +91,13 @@ namespace Demo.SopraSteria._1
 
         static void BusquedasEjercicio()
         {
+
             //Clientes nacidos entre 1980 y 1990
             Console.WriteLine("Clientes nacidos entre 1980 y 1990:");
             Console.WriteLine("");
             DateTime fecha = DateTime.Now;
             var clientes1 = DataLists.ListaClientes
-                .Where(r => (r.FechaNac.Year >= 1980 && r.FechaNac.Year <= 1990))
+                .Where(r => (r.FechaNac.Year >= 1980 && r.FechaNac.Year < 1990))
                  .Select(r => r.Nombre)
                  .ToList();
 
@@ -106,11 +107,12 @@ namespace Demo.SopraSteria._1
             }
 
             Console.WriteLine("");
+
             //Clientes mayores de 25 años
             Console.WriteLine("Clientes Mayores de 25 años");
             Console.WriteLine("");
             var clientes2 = DataLists.ListaClientes
-             .Where(r => ((fecha.Subtract(r.FechaNac).Days / 365) >= 25))
+             .Where(r => ((fecha.Subtract(r.FechaNac).Days / 365) > 25))
               .Select(r => r.Nombre)
               .ToList();
 
@@ -126,11 +128,10 @@ namespace Demo.SopraSteria._1
             Console.WriteLine("");
 
             var productos = DataLists.ListaProductos
-                .OrderByDescending(r => r.Precio)
-                .Select(r => r.Precio)
+                .Where(r => r.Precio == DataLists.ListaProductos.Max(r=>r.Precio))
                 .FirstOrDefault();
 
-            Console.WriteLine($"{ productos}");
+            Console.WriteLine($"{productos.Descripcion} {productos.Precio}");
 
             Console.WriteLine("");
 
