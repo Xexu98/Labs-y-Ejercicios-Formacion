@@ -156,8 +156,6 @@ namespace Sopra.Labs.ConsoleApp1
         /// </summary>
         static void CalcularLetraDNI()
         {
-            Console.WriteLine("Dame el numero del DNI:");
-
             //numero % 23 
 
             int numeroDelDNI;
