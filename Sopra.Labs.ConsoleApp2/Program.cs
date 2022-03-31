@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data;
+using System.Data.SqlClient;
+using Sopra.Labs.ConsoleApp2.Models;
 
 namespace Demo.SopraSteria._1
 {
@@ -9,8 +12,471 @@ namespace Demo.SopraSteria._1
     {
         static void Main(string[] args)
         {
-            BusquedasEjercicio();
+            Ejercicios31032022();
         }
+
+
+        static void Ejercicios31032022()
+        {
+            var context = new ModelNorthwind();
+            DateTime fecha = DateTime.Now;
+            //Clientes de Usa
+            Console.WriteLine("Clientes USA");
+            var clientesUSA = context.Customers
+               .Where(r => r.Country == "USA")
+               .OrderBy(r => r.City)
+               .ToList();
+
+            foreach (var item in clientesUSA)
+            {
+                Console.WriteLine($"ID:{item.CustomerID}");
+                Console.WriteLine($"Empresa:{item.CompanyName}");
+                Console.WriteLine($"Pais:{item.Country}");
+                Console.WriteLine($"Ciudad:{item.City}");
+                Console.WriteLine("");
+            }
+
+            //Proveedores (Suppliers) de BERLIN
+            Console.WriteLine("Proveedores Berlin");
+            var proveedoresBerlin = context.Suppliers
+              .Where(r => r.City == "Berlin")
+              .OrderBy(r => r.CompanyName)
+              .ToList();
+
+            foreach (var item in proveedoresBerlin)
+            {
+                Console.WriteLine($"ID:{item.SupplierID}");
+                Console.WriteLine($"Empresa:{item.CompanyName}");
+                Console.WriteLine($"Pais:{item.Country}");
+                Console.WriteLine($"Ciudad:{item.City}");
+                Console.WriteLine("");
+            }
+
+            //Los empleados con ID 3 , 5 y 8
+
+            Console.WriteLine("Empleados con ID 3,5 y 8");
+
+            /*   int[] employeesIds= new int[] {  3, 5, 8 };
+               var empleados1 = context.Employees
+               .Where(r => employeesIds.Contains(r.EmployeeID))
+               .OrderBy(r => r.City)
+               .ToList();
+
+               var empleados2 = context.Employees
+               .Where(r => new int[]{ 3, 5, 8 }.Contains(r.EmployeeID))
+               .ToList();
+          */
+            var empleados = context.Employees
+             .Where(r => (r.EmployeeID == 3 || r.EmployeeID == 5 || r.EmployeeID == 8))
+             .OrderBy(r => r.City)
+             .ToList();
+
+            foreach (var item in empleados)
+            {
+                Console.WriteLine($"ID:{item.EmployeeID}");
+                Console.WriteLine($"Nombre:{item.FirstName}");
+                Console.WriteLine($"Apellido:{item.LastName}");
+                Console.WriteLine($"Pais:{item.Country}");
+                Console.WriteLine($"Ciudad:{item.City}");
+                Console.WriteLine("");
+            }
+
+            //Productos con stock mayor de cero
+            Console.WriteLine("Productos con stock mayor que 0");
+            var productosStock = context.Products
+             .Where(r => r.UnitsInStock > 0)
+             .OrderBy(r => r.UnitsInStock)
+             .ToList();
+
+            foreach (var item in productosStock)
+            {
+                Console.WriteLine($"ID:{item.ProductID}");
+                Console.WriteLine($"Nombre del producto:{item.ProductName}");
+                Console.WriteLine($"Stock:{item.UnitsInStock}");
+                Console.WriteLine("");
+            }
+
+            //Productos con stock mayor de cero de los proveedores con id 1, 3 y 5
+            Console.WriteLine("Productos con stock mayor que 0 de los proveedores con id 1 , 3 y 5");
+            var productosStockProveedor = context.Products
+             .Where(r => (r.UnitsInStock > 0 && (r.SupplierID == 1 || r.SupplierID == 3 || r.SupplierID == 5)))
+             .OrderBy(r => r.UnitsInStock)
+             .ToList();
+
+            foreach (var item in productosStockProveedor)
+            {
+                Console.WriteLine($"ID:{item.ProductID}");
+                Console.WriteLine($"ID Proveedor:{item.SupplierID}");
+                Console.WriteLine($"Nombre del producto:{item.ProductName}");
+                Console.WriteLine($"Stock:{item.UnitsInStock}");
+                Console.WriteLine("");
+            }
+
+            //Productos precio mayor de 20 y menor de 90
+            Console.WriteLine("Productos con precio mayor que 20 y menor que 90");
+            var productosPrice = context.Products
+            .Where(r => r.UnitPrice > 20 && r.UnitPrice < 90)
+            .OrderBy(r => r.UnitsInStock)
+            .ToList();
+
+            foreach (var item in productosPrice)
+            {
+                Console.WriteLine($"ID:{item.ProductID}");
+                Console.WriteLine($"Nombre del producto:{item.ProductName}");
+                Console.WriteLine($"Stock:{item.UnitsInStock}");
+                Console.WriteLine($"Precio por unidad:{item.UnitPrice}");
+                Console.WriteLine("");
+            }
+
+            //Pedidos entre 01.01.97 y 15.07.97
+            Console.WriteLine("Pedidos entre");
+            var pedidosentre = context.Orders
+             .Where(r => (r.OrderDate >= new DateTime(1997, 01, 01) && r.OrderDate <= new DateTime(1997, 07, 15)))
+             .OrderBy(r => r.OrderDate)
+             .ToList();
+
+            foreach (var item in pedidosentre)
+            {
+                Console.WriteLine($"ID:{item.OrderID}");
+                Console.WriteLine($"Nombre del producto:{item.OrderDate}");
+                Console.WriteLine($"Stock:{item.EmployeeID}");
+                Console.WriteLine($"Precio por unidad:{item.CustomerID}");
+                Console.WriteLine("");
+            }
+
+            //Pedidos del año 97 registrado por los empleados con id 1, 3, 4 y 8
+            Console.WriteLine("Pedidos año 97");
+            var pedidosano97 = context.Orders
+              .Where(r => r.OrderDate.Value.Year == 1997 && (r.EmployeeID == 1 || r.EmployeeID == 3 || r.EmployeeID == 4 || r.EmployeeID == 8))
+              .OrderBy(r => r.OrderDate)
+              .ToList();
+
+            foreach (var item in pedidosano97)
+            {
+                Console.WriteLine($"ID:{item.OrderID}");
+                Console.WriteLine($"Nombre del producto:{item.OrderDate}");
+                Console.WriteLine($"Stock:{item.EmployeeID}");
+                Console.WriteLine($"Precio por unidad:{item.CustomerID}");
+                Console.WriteLine("");
+            }
+
+
+            //Pedidos de Abril del 96
+            Console.WriteLine("Pedidos año 96 en abril");
+            var pedidosAbril = context.Orders
+              .Where(r => r.OrderDate.Value.Year == 1996 && r.OrderDate.Value.Month == 4)
+              .OrderBy(r => r.OrderDate)
+              .ToList();
+
+            foreach (var item in pedidosAbril)
+            {
+                Console.WriteLine($"ID:{item.OrderID}");
+                Console.WriteLine($"Nombre del producto:{item.OrderDate}");
+                Console.WriteLine($"Stock:{item.EmployeeID}");
+                Console.WriteLine($"Precio por unidad:{item.CustomerID}");
+                Console.WriteLine("");
+            }
+
+            //Pedidos realizados los dias 1 de cada mes del año 98
+            Console.WriteLine("Pedidos año 98 dia 1");
+            var pedidosdia1 = context.Orders
+           .Where(r => r.OrderDate.Value.Year == 1998 && r.OrderDate.Value.Day == 1)
+           .OrderBy(r => r.OrderDate)
+           .ToList();
+
+            foreach (var item in pedidosdia1)
+            {
+                Console.WriteLine($"ID:{item.OrderID}");
+                Console.WriteLine($"Nombre del producto:{item.OrderDate}");
+                Console.WriteLine($"Stock:{item.EmployeeID}");
+                Console.WriteLine($"Precio por unidad:{item.CustomerID}");
+                Console.WriteLine("");
+            }
+
+            //Clientes que no tienen FAX
+            Console.WriteLine("Clientes sin fax");
+            var clientesFax = context.Customers
+             .Where(r => r.Fax == null)
+             .OrderBy(r => r.City)
+             .ToList();
+
+            foreach (var item in clientesFax)
+            {
+                Console.WriteLine($"ID:{item.CustomerID}");
+                Console.WriteLine($"Empresa:{item.CompanyName}");
+                Console.WriteLine($"Pais:{item.Country}");
+                Console.WriteLine($"Ciudad:{item.City}");
+                Console.WriteLine("");
+            }
+
+
+            //Los 10 productos mas baratos
+            Console.WriteLine("10 productos baratos");
+            var productosBaratos = context.Products
+                .Where(r => r.UnitsInStock > 0)
+                .OrderByDescending(r => r.UnitPrice)
+                .Take(10)
+                .ToList();
+
+            foreach (var item in productosBaratos)
+            {
+                Console.WriteLine($"ID:{item.ProductID}");
+                Console.WriteLine($"ID Proveedor:{item.SupplierID}");
+                Console.WriteLine($"Unidades:{item.UnitsInStock}");
+                Console.WriteLine($"Precio unidad:{item.UnitPrice}");
+                Console.WriteLine("");
+            }
+
+            //Los 10 productos mas caros con stock
+            Console.WriteLine("10 productos caros");
+            var productosCaros = context.Products
+           .OrderBy(r => r.UnitPrice)
+           .Take(10)
+           .ToList();
+
+            foreach (var item in productosBaratos)
+            {
+                Console.WriteLine($"ID:{item.ProductID}");
+                Console.WriteLine($"ID Proveedor:{item.SupplierID}");
+                Console.WriteLine($"Unidades:{item.UnitsInStock}");
+                Console.WriteLine($"Precio unidad:{item.UnitPrice}");
+                Console.WriteLine("");
+            }
+
+            //Empresas que comienzan por la letra B de UK
+            Console.WriteLine("Empresas B");
+            var empresasB = context.Customers
+            .Where(r => r.CompanyName.StartsWith("B") && r.Country == "UK")
+            .OrderBy(r => r.City)
+            .ToList();
+
+            foreach (var item in empresasB)
+            {
+                Console.WriteLine($"ID:{item.CustomerID}");
+                Console.WriteLine($"Empresa:{item.CompanyName}");
+                Console.WriteLine($"Pais:{item.Country}");
+                Console.WriteLine($"Ciudad:{item.City}");
+                Console.WriteLine("");
+            }
+
+
+            //Productos de la categoria 3 y 5
+            Console.WriteLine("Productos baratos categoria 3 y 5");
+            var productosCategoria = context.Products
+            .Where(r => r.CategoryID == 3 || r.CategoryID == 50)
+            .OrderBy(r => r.ProductName)
+            .ToList();
+
+            foreach (var item in productosCategoria)
+            {
+                Console.WriteLine($"ID:{item.ProductID}");
+                Console.WriteLine($"Nombre del producto:{item.ProductName}");
+                Console.WriteLine($"Stock:{item.UnitsInStock}");
+                Console.WriteLine($"Precio por unidad:{item.UnitPrice}");
+                Console.WriteLine("");
+            }
+
+            //Valor total del stock
+            Console.WriteLine("Valor del stock");
+            decimal valor = 0;
+
+            var valorStock = context.Products
+                .Where(r => r.UnitsInStock > 0)
+            .ToList();
+
+            foreach (var item in valorStock)
+            {
+                valor += item.UnitPrice.GetValueOrDefault() * item.UnitsInStock.GetValueOrDefault();
+            }
+            Console.WriteLine("Valor del stock" + valor);
+
+            //Todos los pedidos de los clientes de argentina
+
+          /*  Console.WriteLine("Clientes Argentina");
+
+            var clientesArg = context.Customers
+           .Where(r => r.Country == "Argentina")
+           .ToList();
+
+            var pedidos = context.Orders
+            .ToList();
+          */
+
+
+
+        }
+        static void TrabajandoConEF()
+        {
+            //EF o EntityFrameworkCore (Manejamos la base de datos como colecciones)
+
+            var context = new ModelNorthwind();
+
+            //Consultas:
+
+            var resultado = context.Products
+                .Where(r => r.ProductName.Contains("Queso"))
+                .ToList();
+
+
+            foreach (var item in resultado)
+            {
+                Console.WriteLine(item.ProductName);
+            }
+
+            //Eliminar Datos:
+
+            var cliente2 = context.Customers
+              .Where(r => r.CustomerID == "DEMO2")
+              .FirstOrDefault();
+
+            if (cliente2 == null)
+            {
+
+            }
+            else
+            {
+                context.Customers.Remove(cliente2);
+
+            }
+            context.SaveChanges();
+
+            //Actualizar datos:
+
+            var cliente = context.Customers
+                .Where(r => r.Country == "Spain")
+                .OrderBy(r => r.City)
+                .ToList();
+
+
+            foreach (var item in cliente)
+            {
+                item.Country = "España";
+            }
+
+            context.SaveChanges();
+            //Insertar Datos:
+
+            var nuevocliente = new Customer()
+            {
+                CustomerID = "DEMO",
+                CompanyName = "Empresa Demo SL",
+                ContactName = "Borja Cabeza",
+                ContactTitle = "Gerente",
+                Address = "Calles Unos, SN",
+                PostalCode = "28033",
+                City = "Madrid",
+                Country = "España",
+                Region = "Madrid",
+                Phone = "900 100 100",
+                Fax = "900 101 101"
+            };
+            var nuevocliente2 = new Customer()
+            {
+                CustomerID = "DEMO2",
+                CompanyName = "Empresa Demo2 SL",
+                ContactName = "Borja Cabeza",
+                ContactTitle = "Gerente",
+                Address = "Calles Unos, SN",
+                PostalCode = "28033",
+                City = "Madrid",
+                Country = "España",
+                Phone = "900 100 100",
+
+            };
+
+
+            //context.Customers.Add(nuevocliente);
+            //context.Customers.Add(nuevocliente2);
+            context.SaveChanges();
+
+            Console.WriteLine("Registro insertado correctamente");
+
+            //Consulta de Datos: SELECT * FROM dbo.Customers WHERE Country = 'Spain' ORDER BY City 
+
+
+            var clientes = context.Customers
+                .Where(r => r.Country == "Spain")
+                .OrderBy(r => r.City)
+                .ToList();
+
+            foreach (var item in clientes)
+            {
+                Console.WriteLine($"ID:{item.CustomerID}");
+                Console.WriteLine($"Empresa:{item.CompanyName}");
+                //Console.WriteLine($"Empresa:{reader["CostumerID"]}");
+                Console.WriteLine($"Pais:{item.Country}");
+                Console.WriteLine($"Ciudad:{item.City}");
+                Console.WriteLine("");
+            }
+        }
+       
+        static void TrabajandoConADONET()
+        {
+            //ADO.NET Access Data Objet (manejamos la base de datos con comandos de Transat-Sql
+
+            //Consulta de Datos: SELECT * FROM dbo.Customers WHERE Country = 'Spain' ORDER BY City
+
+            //Crear cadena de conexion contra la base de datos
+
+            var connectionString = new SqlConnectionStringBuilder()
+            {
+                DataSource = "LOCALHOST",       //Servido de Base de Datos, nombre o ip
+                InitialCatalog = "NORTHWIND",   //Nombre de la base de datos
+                UserID = "",                    //Usuario
+                Password = "",                  //Contraseña
+                IntegratedSecurity = true,      //true es Seguridad basada en Windows
+                ConnectTimeout = 60
+            };
+
+            //Mostrar la cadena de conexion
+            Console.WriteLine($"Conection String{connectionString.ToString()}");
+
+            //Creamos un objeto conexion, que representa la conexion con la base de datos
+            var connect = new SqlConnection()
+            {
+                ConnectionString = connectionString.ToString()
+            };
+
+            Console.WriteLine($"Estado:{connect.State}");
+            connect.Open();
+            Console.WriteLine($"Estado:{connect.State}");
+
+            //Creamos el comando que lanzaremos a la base de datos
+            var command = new SqlCommand()
+            {
+                Connection = connect,
+                CommandText = "SELECT * FROM dbo.Customers WHERE Country = 'Spain' ORDER BY City"
+            };
+
+            //Ejecutamos el comando y recibir la respuesta
+
+            SqlDataReader reader = command.ExecuteReader(); //Comando de tipo consulta SELECT   
+
+            //int registros = command.ExecuteNonQuery();      //Comando no consultas INSERT, UPDATE, DELETE
+
+            if (reader.HasRows == false)
+            {
+                Console.WriteLine("Registros no encontrados");
+            }
+            else
+            {
+                while (reader.Read() == true)
+                {
+                    Console.WriteLine($"ID:{reader["CustomerID"]}");
+                    Console.WriteLine($"Empresa:{reader.GetValue(1)}");
+                    //Console.WriteLine($"Empresa:{reader["CostumerID"]}");
+                    Console.WriteLine($"Pais:{reader["Country"]}");
+                    Console.WriteLine("");
+                }
+            }
+            reader.Close();
+            command.Dispose();
+            connect.Close();
+            connect.Dispose();
+        }
+
+
+
         /// <summary>
         /// Búsquedeas básicas utilizando LINQ
         /// </summary>
@@ -42,7 +508,7 @@ namespace Demo.SopraSteria._1
 
             var r4a = DataLists.ListaProductos.Where(r => r.Precio > 2)
                 .OrderByDescending(r => r.Precio)
-                      .ToList();
+                .ToList();
 
             var r4b = from r in DataLists.ListaProductos
                       where r.Precio > 2
@@ -91,13 +557,12 @@ namespace Demo.SopraSteria._1
 
         static void BusquedasEjercicio()
         {
-
             //Clientes nacidos entre 1980 y 1990
             Console.WriteLine("Clientes nacidos entre 1980 y 1990:");
             Console.WriteLine("");
             DateTime fecha = DateTime.Now;
             var clientes1 = DataLists.ListaClientes
-                .Where(r => (r.FechaNac.Year >= 1980 && r.FechaNac.Year < 1990))
+                .Where(r => (r.FechaNac.Year >= 1980 && r.FechaNac.Year <= 1990))
                  .Select(r => r.Nombre)
                  .ToList();
 
@@ -128,10 +593,9 @@ namespace Demo.SopraSteria._1
             Console.WriteLine("");
 
             var productos = DataLists.ListaProductos
-                .Where(r => r.Precio == DataLists.ListaProductos.Max(r=>r.Precio))
-                .FirstOrDefault();
+                .Max(r => r.Precio);
 
-            Console.WriteLine($"{productos.Descripcion} {productos.Precio}");
+            Console.WriteLine($"{ productos}");
 
             Console.WriteLine("");
 
@@ -142,11 +606,10 @@ namespace Demo.SopraSteria._1
             Console.WriteLine("");
             float media = 0;
 
-
             var productos2 = DataLists.ListaProductos
                 .Average(r => r.Precio);
 
-            media =  productos2;
+            media = productos2;
             Console.WriteLine($"{media}");
 
             Console.WriteLine("");
@@ -154,7 +617,7 @@ namespace Demo.SopraSteria._1
 
             //Productos con un precio inferior a la media
 
-            Console.WriteLine("Producto con el precio mas alto que la media");
+            Console.WriteLine("Producto con el precio mas alto");
             Console.WriteLine("");
 
             var productos3 = DataLists.ListaProductos
@@ -170,7 +633,19 @@ namespace Demo.SopraSteria._1
             Console.WriteLine("");
 
         }
+
+
+
+
+
+
     }
+
+
+
+
+
+
     /// <summary>
     /// Representa el Objeto Cliente
     /// </summary>
