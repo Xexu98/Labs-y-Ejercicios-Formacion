@@ -278,17 +278,12 @@ namespace Demo.SopraSteria._1
 
             //Valor total del stock
             Console.WriteLine("Valor del stock");
-            decimal valor = 0;
 
             var valorStock = context.Products
-                .Where(r => r.UnitsInStock > 0)
-            .ToList();
+                .Sum(r => r.UnitsInStock *r.UnitPrice);
 
-            foreach (var item in valorStock)
-            {
-                valor += item.UnitPrice.GetValueOrDefault() * item.UnitsInStock.GetValueOrDefault();
-            }
-            Console.WriteLine("Valor del stock" + valor);
+
+            Console.WriteLine("Valor del stock " + valorStock);
 
             //Todos los pedidos de los clientes de argentina
 
