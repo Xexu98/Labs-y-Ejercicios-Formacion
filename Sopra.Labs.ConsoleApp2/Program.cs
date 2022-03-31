@@ -287,16 +287,24 @@ namespace Demo.SopraSteria._1
 
             //Todos los pedidos de los clientes de argentina
 
-          /*  Console.WriteLine("Clientes Argentina");
+           Console.WriteLine("Clientes Argentina");
 
             var clientesArg = context.Customers
-           .Where(r => r.Country == "Argentina")
+           .Where(s => s.Country == "Argentina")
+           .Select(s=>s.CustomerID)
            .ToList();
 
             var pedidos = context.Orders
+             .Where(r => clientesArg.Contains(r.CustomerID))
             .ToList();
-          */
 
+
+            var pedidos2 = context.Orders
+            .Where(r => context.Customers
+           .Where(s => s.Country == "Argentina")
+           .Select(s => s.CustomerID)
+           .ToList().Contains(r.CustomerID))
+           .ToList();
 
 
         }
