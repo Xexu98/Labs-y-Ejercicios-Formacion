@@ -4,6 +4,7 @@ using System.Linq;
 using System.Data;
 using System.Data.SqlClient;
 using Sopra.Labs.ConsoleApp2.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Demo.SopraSteria._1
 {
@@ -12,10 +13,89 @@ namespace Demo.SopraSteria._1
     {
         static void Main(string[] args)
         {
-            Ejercicios31032022();
+            BusquedasComplejas();
         }
 
+        static void Ejercicios01042022()
+        {
 
+            var context = new ModelNorthwind();
+            DateTime fecha = DateTime.Now;
+            //Listado de empleados que son mayores sus jefes(ReportsTo es id Jefe)
+
+            Console.WriteLine("Empleados mayores que su jefe");
+
+
+
+
+            var empleados = context.Employees
+            .Where(r => r.BirthDate < context.Employees
+                    .Where(s => s.EmployeeID == r.ReportsTo)
+                    .Select(s => s.BirthDate)
+                    .FirstOrDefault())
+            .ToList();
+
+            Console.WriteLine("");
+            foreach (var item in empleados)
+            {
+                Console.WriteLine($"Nombre:{item.FirstName}");
+                Console.WriteLine($"Fecha de nacimiento:{item.BirthDate}");
+                Console.WriteLine($"Pais:{item.Country}");
+                Console.WriteLine($"Ciudad:{item.City}");
+                Console.WriteLine("");
+            }
+
+            //Listado de productos: Nombre del Producto, Stock, Valor del Stock
+
+            Console.WriteLine("Listado Productos");
+            var productosStock = context.Products
+             .Select(s => new { s.ProductName, s.UnitsInStock, Total = s.UnitsInStock * s.UnitPrice })
+             .ToList();
+
+            Console.WriteLine("");
+            foreach (var item in productosStock)
+            {
+
+                Console.WriteLine($"Nombre del producto:{item.ProductName}");
+                Console.WriteLine($"Stock:{item.UnitsInStock}");
+                Console.WriteLine($"Valor stock:{item.Total}");
+                Console.WriteLine("");
+            }
+
+            //Listado de empleados: Nombre, Apellido, Número total de pedidos en 1997
+            Console.WriteLine("Listado Empleados");
+
+            var empleadosLista = context.Employees
+           .OrderBy(r => r.EmployeeID)
+           .Select(r => new
+           {
+               r.FirstName,
+               r.LastName,
+               numPedidos = context.Orders
+                        .Count(s => s.OrderDate.Value.Year == 1997 && r.EmployeeID == s.EmployeeID)
+           })
+            .ToList();
+
+            Console.WriteLine("");
+            foreach (var item in empleadosLista)
+            {
+
+                Console.WriteLine($"Nombre:{item.FirstName}");
+                Console.WriteLine($"Apellido:{item.LastName}");
+                Console.WriteLine($"Numero pedidos:{item.numPedidos}");
+                Console.WriteLine("");
+            }
+
+            //El tiempo medio en dias de la preparación pedido
+
+            var tiempoMedio = context.Orders
+                .Where(r => r.ShippedDate != null && r.OrderDate != null)
+                .AsEnumerable()
+                .Average(r => r.ShippedDate.Value.Subtract(r.OrderDate.Value).Days);
+
+            Console.WriteLine("Tiempo medio: " + tiempoMedio);
+            Console.WriteLine("");
+        }
         static void Ejercicios31032022()
         {
             var context = new ModelNorthwind();
@@ -280,18 +360,18 @@ namespace Demo.SopraSteria._1
             Console.WriteLine("Valor del stock");
 
             var valorStock = context.Products
-                .Sum(r => r.UnitsInStock *r.UnitPrice);
+                .Sum(r => r.UnitsInStock * r.UnitPrice);
 
 
             Console.WriteLine("Valor del stock " + valorStock);
 
             //Todos los pedidos de los clientes de argentina
 
-           Console.WriteLine("Clientes Argentina");
+            Console.WriteLine("Clientes Argentina");
 
             var clientesArg = context.Customers
            .Where(s => s.Country == "Argentina")
-           .Select(s=>s.CustomerID)
+           .Select(s => s.CustomerID)
            .ToList();
 
             var pedidos = context.Orders
@@ -412,7 +492,7 @@ namespace Demo.SopraSteria._1
                 Console.WriteLine("");
             }
         }
-       
+
         static void TrabajandoConADONET()
         {
             //ADO.NET Access Data Objet (manejamos la base de datos con comandos de Transat-Sql
@@ -477,7 +557,6 @@ namespace Demo.SopraSteria._1
             connect.Close();
             connect.Dispose();
         }
-
 
 
         /// <summary>
@@ -637,16 +716,173 @@ namespace Demo.SopraSteria._1
 
         }
 
+        static void BusquedasComplejas()
+        {
+            var context = new ModelNorthwind();
+
+            //Intersect
+
+            //Clientes pedido producto 57
+
+            var i1 = context.Order_Details
+                .Include(s=>s.Order)
+                .Where(s => s.ProductID == 57)
+                .Select(s => s.Order.CustomerID)
+                .ToList();
 
 
 
 
+            //Clientes pedido producto 72 en 1997
 
+            var i2 = context.Order_Details
+              .Include(s => s.Order)
+              .Where(s => s.ProductID == 72)
+              .Select(s => s.Order.CustomerID)
+              .ToList();
+
+
+
+            //Clientes coincidentes 57+72 en 1997
+
+            var cliente = i1.Intersect(i2).ToList();
+
+            var clients = context.Customers
+                .Where(s => cliente.Contains(s.CustomerID))
+                .Select(s => s.CompanyName)
+                .ToList();
+
+            foreach(var item in clients) Console.WriteLine(item);
+
+            Console.ReadKey();
+            // 
+
+            /////////////////////////////////////////////////////////////
+            int[]id1 = { 44, 26, 125,32,71,128 };
+            int[] id2 = { 44, 126, -125,72, 781, 14, 98, 32 };
+
+            var resultado = id1.Intersect(id2).ToList();    
+
+            foreach(var item in resultado)Console.WriteLine(item);
+
+
+            //Include
+
+            //Listado de pedidos de los clientes de USa
+
+            var clientesUsa = context.Orders
+               .Include(s => s.Customer)
+               .Where(s=>s.Customer.Country =="USA")
+               .ToList();
+
+
+            foreach (var item in clientesUsa)
+            {
+                Console.WriteLine($"{item.Customer.CompanyName} {item.OrderID} {item.OrderDate}");
+                Console.WriteLine("");
+            }
+
+            //Listado de empleados: Nombre, Apellido, Número total de pedidos en 1997
+
+            var empleados97 = context.Employees         
+               .Include(s => s.Orders)
+               .Select(s => new {s.FirstName, s.LastName, pedidos = s.Orders.Count(r=>r.OrderDate.Value.Year==1997)})
+               .ToList();
+
+            foreach (var item in empleados97)
+            {
+                Console.WriteLine($"{item.FirstName} {item.LastName} {item.pedidos}");
+            }
+
+            //Productos de la categoria condiments y seafood
+
+            var productos = context.Products
+                .Include(s => s.Category)
+                .Where(s=> s.Category.CategoryName == "Condiments" || s.Category.CategoryName == "Seafood")
+                .ToList();
+
+            foreach (var item in productos)
+            {
+                Console.WriteLine($"{item.ProductName} {item.UnitPrice}");
+            }
+
+
+            Console.ReadKey();
+            ////////////////////////////////////////////////////////////////
+            var clientes3 = context.Customers
+                .Include(r=>r.Orders)
+                .ToList();
+
+
+            var clientes3b = (from r in context.Customers
+                              select r).Include(r => r.Orders);
+
+            foreach (var item in clientes3)
+            {
+                Console.WriteLine($"{item.CustomerID} {item.CompanyName}");
+
+                var pedidos = context.Orders
+                    .Where(r => r.CustomerID == item.CustomerID)
+                    .ToList();
+
+                foreach (var pedido in item.Orders)
+                {
+                    Console.Write($"{pedido.OrderID} ");
+                    Console.WriteLine(Environment.NewLine);
+                }
+            }
+
+            var clientes = context.Customers.ToList();
+
+            foreach (var item in clientes)
+            {
+                Console.WriteLine($"{item.CustomerID} {item.CompanyName}");
+
+                var pedidos = context.Orders
+                    .Where(r => r.CustomerID == item.CustomerID)
+                    .ToList();
+
+                foreach (var pedido in pedidos)
+                {
+                    Console.Write($"{pedido.OrderID} ");
+                    Console.WriteLine(Environment.NewLine);
+                }
+            }
+
+            var clientes2 = context.Customers
+                .Select(r => new
+                {
+                    r.CustomerID,
+                    r.CompanyName,
+                    Pedidos = context.Orders.Where(s => s.CustomerID == r.CustomerID)
+                })
+                .ToList();
+
+
+            foreach (var item in clientes2)
+            {
+                Console.WriteLine($"{item.CustomerID} {item.CompanyName}");
+
+                var pedidos = context.Orders
+                    .Where(r => r.CustomerID == item.CustomerID)
+                    .ToList();
+
+                foreach (var pedido in item.Pedidos)
+                {
+                    Console.Write($"{pedido.OrderID} ");
+                    Console.WriteLine(Environment.NewLine);
+
+                }
+
+
+
+
+            }
+
+
+
+        }
     }
-
-
-
-
 
 
     /// <summary>
