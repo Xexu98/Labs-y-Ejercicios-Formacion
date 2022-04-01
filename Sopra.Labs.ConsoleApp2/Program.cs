@@ -737,7 +737,7 @@ namespace Demo.SopraSteria._1
 
             var i2 = context.Order_Details
               .Include(s => s.Order)
-              .Where(s => s.ProductID == 72)
+              .Where(s => s.ProductID == 72 && s.Order.OrderDate.Value.Year==1997)
               .Select(s => s.Order.CustomerID)
               .ToList();
 
@@ -747,12 +747,8 @@ namespace Demo.SopraSteria._1
 
             var cliente = i1.Intersect(i2).ToList();
 
-            var clients = context.Customers
-                .Where(s => cliente.Contains(s.CustomerID))
-                .Select(s => s.CompanyName)
-                .ToList();
 
-            foreach(var item in clients) Console.WriteLine(item);
+            foreach(var item in cliente) Console.WriteLine(item);
 
             Console.ReadKey();
             // 
