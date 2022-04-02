@@ -13,9 +13,103 @@ namespace Demo.SopraSteria._1
     {
         static void Main(string[] args)
         {
-            BusquedasComplejas();
+            EjerciciosExtraFinDeSemana();
         }
+        static void EjerciciosExtraFinDeSemana()
+        {
+            var context = new ModelNorthwind();
 
+            //Listado de unidades vendidas de cada producto ordenado por número total de unidad
+
+
+
+              var unidadesVendidas = context.Order_Details
+                 .AsEnumerable().
+                  GroupBy(r => r.ProductID)
+                 .Select(r=> new { r.Key,cantidad = r.Sum( s => s.Quantity)})
+                 .OrderBy(r => r.cantidad)
+                 .Distinct()
+                 .ToList();
+
+               foreach (var item in unidadesVendidas)
+               {
+                   Console.WriteLine("==========================================================");
+                   Console.WriteLine($" Product ID {item.Key} Cantidad {item.cantidad}");
+                   Console.WriteLine("==========================================================");
+
+               }
+               Console.ReadKey();
+
+             //Importe facturado por cada producto ordenado por producto
+
+              var importe = context.Order_Details
+                 .AsEnumerable()
+                 .GroupBy(r => r.ProductID)
+                 .Select(r => new { r.Key, Importe = r.Sum(s => s.UnitPrice * s.Quantity)})
+                 .OrderBy(r=>r.Key)
+                 .ToList();
+
+              foreach (var item in importe)
+              {
+                  Console.WriteLine("==========================================================");
+                  Console.WriteLine($" Product ID {item.Key.ToString()} Cantidad {item.Importe.ToString()}");
+                  Console.WriteLine("==========================================================");
+
+              }
+              Console.ReadKey();
+
+            //Listado de Pedidos agrupado por Empleado, con número de pedidos, importe total factura en concepto de gastos de envio
+
+            /*var pedidosEmpleados = context.Orders
+            .AsEnumerable()
+            .GroupBy(r=>r.Employee.FirstName)
+            .ToList();
+
+              foreach (var item in pedidosEmpleados)
+              {
+                  Console.WriteLine("==========================================================");
+                  //Console.WriteLine($" Nombre empleado {item.ProductID} Cantidad {item.cantidad}");
+                  Console.WriteLine("==========================================================");
+                   foreach()
+                   {
+
+                   }
+
+              }
+              Console.ReadKey();*/
+
+            //Número de pedidos enviado por cada empresa de transporte.
+
+            /* var pedidosEmpresas = context.Orders
+              .Select(r => new { r.ShipName, pedidos = context.Orders.Sum(r => context.Orders.AsEnumerable().GroupBy(r=>r.ShipName)) })
+              .OrderBy(r => r.ShipName)
+              .ToList();
+
+            foreach (var item in pedidosEmpresas)
+            {
+                Console.WriteLine("==========================================================");
+                Console.WriteLine($" Product ID {item.ShipName} Cantidad {item.pedidos}");
+                Console.WriteLine("==========================================================");
+
+            }
+            Console.ReadKey();*/
+
+            //Listado de pedido enviados por la empresa 3 que incluya el OrderID y número de lineas de pedido (registros en Orders_Details)
+
+            /* var enviadosEmpresa3 = context.Order_Details
+              .Select(r => new { r.Order., cantidad = context.Order_Details.Sum(r => ) })
+              .OrderBy(r => r.cantidad)
+              .ToList();
+
+            foreach (var item in enviadosEmpresa3)
+            {
+                Console.WriteLine("==========================================================");
+                Console.WriteLine($" Product ID {item.ProductID} Cantidad {item.cantidad}");
+                Console.WriteLine("==========================================================");
+
+            }
+            Console.ReadKey();*/
+        }
         static void Ejercicios01042022()
         {
 
@@ -719,6 +813,68 @@ namespace Demo.SopraSteria._1
         static void BusquedasComplejas()
         {
             var context = new ModelNorthwind();
+
+            //Group by
+
+            //Linea de pedidos, agrupadas por pedidos
+
+            var pedidosLineas = context.Order_Details
+                .AsEnumerable()
+                .GroupBy(r => r.OrderID)
+                .Select(r => r)
+                .ToList();
+
+            foreach (var item in pedidosLineas)
+            {
+                Console.WriteLine("==========================================================");
+                Console.WriteLine($" Clientes de {item.Key} {item.Count()}");
+                Console.WriteLine("==========================================================");
+
+            }
+
+            Console.ReadKey();
+            /////////////////////////////////////////////
+
+            var clienteXpais = context.Customers
+                .AsEnumerable()
+                .GroupBy(r => r.Country)
+                .Select(r => r)
+                .ToList();
+
+            foreach (var item in clienteXpais)
+            {
+                Console.Write("==========================================================");
+                Console.Write($" Clientes de {item.Key} {item.Count()}");
+                Console.WriteLine("==========================================================");
+                foreach (var item2 in item)
+                {
+                    Console.WriteLine($"{item2.CustomerID} {item2.CompanyName}");
+                }
+            }
+
+            var paises = context.Customers
+                .Select(r=>r.Country)
+                .Distinct()
+                .ToList();
+            Console.WriteLine(string.Join(",", paises));
+
+            foreach (var item in paises)
+            {
+                Console.Write("==========================================================");
+                Console.Write($" Clientes de {item} ");
+                
+                var c2 = context.Customers
+                    .Where(r => r.Country == item)
+                    .ToList();
+                Console.WriteLine($"{c2.Count()}");
+
+                Console.WriteLine("==========================================================");
+                foreach (var item2 in c2)
+                {
+                    Console.WriteLine($"{item2.CustomerID} {item2.CompanyName}");
+                }
+            }
+
 
             //Intersect
 
