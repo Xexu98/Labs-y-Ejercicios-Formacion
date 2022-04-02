@@ -60,44 +60,43 @@ namespace Demo.SopraSteria._1
 
             //Listado de Pedidos agrupado por Empleado, con número de pedidos, importe total factura en concepto de gastos de envio
 
-            /*var pedidosEmpleados = context.Orders
+            var pedidosEmpleados = context.Orders
             .AsEnumerable()
-            .GroupBy(r=>r.Employee.FirstName)
+            .GroupBy(r=>r.EmployeeID)
+            .Select(r => new { r.Key, pedidos = r.Count(), importe = r.Sum(s=>s.Freight) })
+            .OrderBy(r=>r.Key)
             .ToList();
 
               foreach (var item in pedidosEmpleados)
               {
                   Console.WriteLine("==========================================================");
-                  //Console.WriteLine($" Nombre empleado {item.ProductID} Cantidad {item.cantidad}");
+                  Console.WriteLine($" ID Empleado {item.Key} Pedidos {item.pedidos} Importe Total {item.importe}");
                   Console.WriteLine("==========================================================");
-                   foreach()
-                   {
-
-                   }
 
               }
-              Console.ReadKey();*/
+              Console.ReadKey();
 
             //Número de pedidos enviado por cada empresa de transporte.
 
-            /* var pedidosEmpresas = context.Orders
-              .Select(r => new { r.ShipName, pedidos = context.Orders.Sum(r => context.Orders.AsEnumerable().GroupBy(r=>r.ShipName)) })
-              .OrderBy(r => r.ShipName)
+             var pedidosEmpresas = context.Orders
+              .AsEnumerable()
+              .GroupBy(r => r.ShipVia)
+              .Select(r => new { r.Key, pedidos = r.Count()})
               .ToList();
 
             foreach (var item in pedidosEmpresas)
             {
                 Console.WriteLine("==========================================================");
-                Console.WriteLine($" Product ID {item.ShipName} Cantidad {item.pedidos}");
+                Console.WriteLine($" ID Empresa {item.Key} Cantidad {item.pedidos}");
                 Console.WriteLine("==========================================================");
 
             }
-            Console.ReadKey();*/
+            Console.ReadKey();
 
             //Listado de pedido enviados por la empresa 3 que incluya el OrderID y número de lineas de pedido (registros en Orders_Details)
 
-            /* var enviadosEmpresa3 = context.Order_Details
-              .Select(r => new { r.Order., cantidad = context.Order_Details.Sum(r => ) })
+          /*   var enviadosEmpresa3 = context.Order_Details
+              .Select(r => new { r.Order, cantidad = r.Sum(r => )})
               .OrderBy(r => r.cantidad)
               .ToList();
 
@@ -108,6 +107,7 @@ namespace Demo.SopraSteria._1
                 Console.WriteLine("==========================================================");
 
             }
+
             Console.ReadKey();*/
         }
         static void Ejercicios01042022()
